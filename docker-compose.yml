@@ -1,3 +1,6 @@
+#
+# FICHIER ADAPTÉ : docker-compose.yml (Version pour Jenkins)
+#
 version: "3.9"
 
 services:
@@ -13,21 +16,25 @@ services:
       - mongo-data:/data/db
 
   backend:
-    build: ./backend
+    # L'image est maintenant définie par une variable que Jenkins fournira
+    image: ${IMAGE_BACKEND}
     container_name: backend
     restart: always
+    # Jenkins va créer un fichier .env.backend temporaire et sécurisé
     env_file:
-      - ./backend/.env
+      - ./.env.backend
     ports:
       - "5000:5000"
     depends_on:
       - mongodb
 
   frontend:
-    build: .
+    # L'image est aussi définie par une variable Jenkins
+    image: ${IMAGE_FRONTEND}
     container_name: frontend
     restart: always
     ports:
+      # J'ai gardé ton port 8080
       - "8080:80"
     depends_on:
       - backend
