@@ -1,14 +1,14 @@
 //
-# FICHIER FINAL : Jenkinsfile (Version personnalisée pour abdoul223)
-#
+// FICHIER CORRIGÉ : Jenkinsfile (Version avec la bonne syntaxe de commentaires)
+//
 pipeline {
     agent any
 
     environment {
-        // ✅ Ton username Docker Hub
+        // Ton username Docker Hub
         DOCKERHUB_USERNAME = 'abdoul223' 
-
-        // ✅ Tes noms d'images sur Docker Hub
+        
+        // Tes noms d'images sur Docker Hub
         IMAGE_NAME_BACKEND = 'backend'
         IMAGE_NAME_FRONTEND = 'frontend'
     }
@@ -57,7 +57,7 @@ pipeline {
                         sh """
                             export IMAGE_BACKEND=${DOCKERHUB_USERNAME}/${IMAGE_NAME_BACKEND}:build-${env.BUILD_NUMBER}
                             export IMAGE_FRONTEND=${DOCKERHUB_USERNAME}/${IMAGE_NAME_FRONTEND}:build-${env.BUILD_NUMBER}
-
+                            
                             docker-compose pull backend frontend
                             docker-compose up -d --remove-orphans
                         """
@@ -66,9 +66,10 @@ pipeline {
             }
         }
     }
-
+    
     post {
         always {
+            // Nettoyage du secret temporaire
             echo 'Nettoyage du workspace...'
             sh 'rm -f ./.env.backend'
         }
