@@ -1,18 +1,18 @@
-# frontend/Dockerfile
+#
+# FICHIER CORRIGÉ : backend/Dockerfile (Version Production)
+#
+FROM node:20-alpine
 
-# Étape 1 : build de l'application
-FROM node:20-alpine AS build
 WORKDIR /app
+
 COPY package*.json ./
-RUN npm install
+
+# Installe uniquement les dépendances de production
+RUN npm ci --only=production
+
 COPY . .
-RUN npm run build
 
-# Étape 2 : serveur Nginx
-FROM nginx:alpine
-COPY --from=build /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 5000
 
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
-
+# Utilise la commande de démarrage stable pour la production
+CMD ["npm", "start"]
