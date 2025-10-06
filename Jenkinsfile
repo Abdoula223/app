@@ -1,11 +1,13 @@
 //
-// 
+// FICHIER FINAL CORRIGÉ : Jenkinsfile (Correction de la faute de frappe sur la variable)
 //
 pipeline {
     agent any
 
     environment {
-        DOCK_USERNAME = 'abdoul223' 
+        // ✅ CORRIGÉ ICI : DOCK_USERNAME redevient DOCKERHUB_USERNAME
+        DOCKERHUB_USERNAME = 'abdoul223' 
+        
         IMAGE_NAME_BACKEND = 'backend'
         IMAGE_NAME_FRONTEND = 'frontend'
     }
@@ -55,9 +57,7 @@ pipeline {
                             export IMAGE_BACKEND=${DOCKERHUB_USERNAME}/${IMAGE_NAME_BACKEND}:build-${env.BUILD_NUMBER}
                             export IMAGE_FRONTEND=${DOCKERHUB_USERNAME}/${IMAGE_NAME_FRONTEND}:build-${env.BUILD_NUMBER}
                             
-                            # CHANGEMENT ICI : docker-compose devient docker compose
                             docker compose pull backend frontend
-                            # ET CHANGEMENT ICI : docker-compose devient docker compose
                             docker compose up -d --remove-orphans
                         """
                     }
