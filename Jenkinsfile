@@ -1,14 +1,11 @@
 //
-// FICHIER CORRIGÉ : Jenkinsfile (Version avec la bonne syntaxe de commentaires)
+// 
 //
 pipeline {
     agent any
 
     environment {
-        // Ton username Docker Hub
-        DOCKERHUB_USERNAME = 'abdoul223' 
-        
-        // Tes noms d'images sur Docker Hub
+        DOCK_USERNAME = 'abdoul223' 
         IMAGE_NAME_BACKEND = 'backend'
         IMAGE_NAME_FRONTEND = 'frontend'
     }
@@ -53,13 +50,15 @@ pipeline {
                 withCredentials([string(credentialsId: 'backend-env-file', variable: 'ENV_FILE_CONTENT')]) {
                     script {
                         sh 'echo "$ENV_FILE_CONTENT" > ./.env.backend'
-                        echo 'Déploiement de la stack complète...'
+                        echo 'Déploiement de la stack complète avec docker compose V2...'
                         sh """
                             export IMAGE_BACKEND=${DOCKERHUB_USERNAME}/${IMAGE_NAME_BACKEND}:build-${env.BUILD_NUMBER}
                             export IMAGE_FRONTEND=${DOCKERHUB_USERNAME}/${IMAGE_NAME_FRONTEND}:build-${env.BUILD_NUMBER}
                             
-                            docker-compose pull backend frontend
-                            docker-compose up -d --remove-orphans
+                            # CHANGEMENT ICI : docker-compose devient docker compose
+                            docker compose pull backend frontend
+                            # ET CHANGEMENT ICI : docker-compose devient docker compose
+                            docker compose up -d --remove-orphans
                         """
                     }
                 }
@@ -69,7 +68,6 @@ pipeline {
     
     post {
         always {
-            // Nettoyage du secret temporaire
             echo 'Nettoyage du workspace...'
             sh 'rm -f ./.env.backend'
         }
