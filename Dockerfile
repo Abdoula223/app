@@ -1,18 +1,17 @@
-#
-# FICHIER CORRIGÉ : backend/Dockerfile (Version Production)
-#
-FROM node:20-alpine
-
+# Stage 1: Build de l'application React
+FROM node:20-alpine AS builder
 WORKDIR /app
-
 COPY package*.json ./
-
-# Installe uniquement les dépendances de production
-RUN npm ci --only=production
-
+RUN npm ci
 COPY . .
+RUN npm run build
 
-EXPOSE 5000
+# Stage 2: Servir avec Nginx
+FROM nginx:alpine
+COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Utilise la commande de démarrage stable pour la production
-CMD ["npm", "start"]
+# Si tu as un fichier nginx.conf personnalisé, décommente cette ligne :
+# COPY nginx.conf /etc/nginx/nginx.conf
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
