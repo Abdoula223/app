@@ -1,6 +1,3 @@
-#
-# FICHIER ADAPTÉ : docker-compose.yml (Version corrigée pour Jenkins)
-#
 version: "3.9"
 
 services:
@@ -16,24 +13,22 @@ services:
       - mongo-data:/data/db
 
   backend:
-    # L'image est définie par Jenkins via la variable IMAGE_BACKEND
-    image: ${IMAGE_BACKEND}
+    image: abdoul223/smartphone-backend:latest
     container_name: backend
     restart: always
     env_file:
-      - ./.env.backend
+      - ./backend/.env
     ports:
       - "5000:5000"
     depends_on:
       - mongodb
 
   frontend:
-    # L'image est définie par Jenkins via la variable IMAGE_FRONTEND
-    image: ${IMAGE_FRONTEND}
+    image: abdoul223/smartphone-frontend:latest
     container_name: frontend
     restart: always
     ports:
-      - "3000:80"   # ⚠️ Port modifié pour éviter le conflit avec Jenkins
+      - "8080:80"
     depends_on:
       - backend
 
